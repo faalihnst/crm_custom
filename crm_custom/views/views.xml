@@ -1,0 +1,71 @@
+<odoo>
+  <data>
+    <record model="ir.ui.view" id="view_customer_edit">
+      <field name="name">CRM Edit View</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_case_form_view_oppor"/>
+      <field name="arch" type="xml">
+        <field name="tag_ids" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </field>
+        <field name="source_id" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </field>
+        <xpath expr="//button[@name='149']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <field name="date_deadline" position="after">
+          <field name="self_archive"/>
+          <field name="days_archive"/>
+        </field>
+      </field>
+    </record>
+
+    <record id="crm.action_mark_as_lost" model="ir.actions.server">
+      <field name="name">Mark as lost</field>
+      <field name="model_id" ref="crm.model_crm_lead"/>
+      <field name="binding_model_id"></field>
+      <field name="state">code</field>
+      <field name="code">
+if record:
+    action_values = env.ref('crm.crm_lead_lost_action').read()[0]
+    action_values.update({'context': env.context})
+    action = action_values
+      </field>
+    </record>
+
+    <record id="cron_lead_inactive" model="ir.cron">
+      <field name="interval_number">1</field>
+      <field name="interval_type">days</field>
+      <field name="name">Make Lead Inactive</field>
+      <field name="numbercall">-1</field>
+      <field name="priority">3</field>
+      <field name="doall">True</field>
+      <field name="active">True</field>
+      <field name="model_id" ref="crm.model_crm_lead"/>
+      <field name="state">code</field>
+      <field name="code">model.make_lead_inactive()</field>
+    </record>
+
+    <record model="ir.ui.view" id="view_leads_edit">
+      <field name="name">CRM Leads Edit</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.crm_case_form_view_leads"/>
+      <field name="arch" type="xml">
+        <field name="tag_ids" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </field>
+        <xpath expr="//button[@name='action_set_lost']" position="attributes">
+          <attribute name="invisible">1</attribute>
+        </xpath>
+        <field name="priority" position="after">
+          <field name="self_archive"/>
+          <field name="days_archive"/>
+        </field>
+      </field>
+    </record>
+
+
+
+  </data>
+</odoo>
